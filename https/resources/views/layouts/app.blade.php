@@ -38,12 +38,13 @@
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     <li class="nav-item"><a href="" class="nav-link">All series</a></li>
                     <li class="nav-item"><a href="" class="nav-link">Create series</a></li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="">Hey</a></li>
-                        </li>
-                        <li class="nav-item"><a href="" class="nav-link">All series</a></li>
-                        <li class="nav-item"><a href="" class="nav-link">All series</a></li>
+                    <li class="nav-item"><a href="" class="nav-link">All series</a></li>
+                    <li class="nav-item"><a href="" class="nav-link">All series</a></li>
+                    @if(auth()->check())
+                        Hey {{ auth()->user()->name }}
+                    @else
                         <li class="nav-item"><a class="nav-link" href="javascript:;" data-toggle="modal" data-target="#loginModal">Login</a></li>
+                    @endif
                 </ul>
             </div>
 
@@ -73,9 +74,9 @@
     <!-- END Main container -->
 
 
-
-
-    <vue-login></vue-login>
+    @if(!auth()->check())
+        <vue-login></vue-login>
+    @endif
 <!-- Footer -->
     <footer class="site-footer">
         <div class="container">

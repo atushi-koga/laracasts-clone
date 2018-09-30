@@ -47379,6 +47379,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -47386,7 +47391,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             email: '',
             password: '',
-            remember: true
+            remember: true,
+            loading: false,
+            errors: []
         };
     },
 
@@ -47400,21 +47407,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
         },
         attemptLogin: function attemptLogin() {
+            var _this = this;
+
+            this.errors = [];
+            this.loading = true;
             __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/login', {
                 email: this.email,
                 password: this.password,
                 remember: this.remember
             }).then(function (resp) {
-                console.log(resp);
+                console.log('ok');
+                location.reload();
             }).catch(function (error) {
-                console.log(error);
+                _this.loading = false;
+                if (error.response.status == 422) {
+                    _this.errors.push("we couldn't verify yout account detailed.");
+                } else {
+                    _this.errors.push("Something went wrong. please refresh and  try again");
+                }
             });
         }
     },
 
     computed: {
         isValidLoginForm: function isValidLoginForm() {
-            return this.emailIsValid() && this.password;
+            return this.emailIsValid() && this.password && !this.loading;
         }
     }
 });
@@ -47456,6 +47473,29 @@ var render = function() {
             _c("br"),
             _vm._v(" "),
             _c("form", [
+              _vm.errors.length > 0
+                ? _c(
+                    "ul",
+                    { staticClass: "list-group alert alert-danger" },
+                    _vm._l(_vm.errors, function(error) {
+                      return _c(
+                        "li",
+                        {
+                          key: _vm.errors.indexOf(error),
+                          staticClass: "list-group-item"
+                        },
+                        [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(error) +
+                              "\n            "
+                          )
+                        ]
+                      )
+                    })
+                  )
+                : _vm._e(),
+              _vm._v(" "),
               _c("div", { staticClass: "form-group" }, [
                 _c("input", {
                   directives: [
