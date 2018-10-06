@@ -1,10 +1,10 @@
 @component('mail::message')
-# Introduction
+# One more step before joining Bahdcasts !
 
-The body of your message.
+We need you to confirm your email
 
-@component('mail::button', ['url' => ''])
-Button Text
+@component('mail::button', ['url' => "/register/confirm?token={$user->confirm_token}"])
+Confirm Email
 @endcomponent
 
 Thanks,<br>

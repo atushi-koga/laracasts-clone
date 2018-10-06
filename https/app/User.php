@@ -27,4 +27,16 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function confirm()
+    {
+        $this->confirm_token = null;
+        $this->save();
+    }
+
+
+    public function isConfirmed()
+    {
+        return $this->confirm_token === null;
+    }
 }

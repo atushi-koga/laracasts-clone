@@ -28,3 +28,5 @@ Route::get('/logout', function () {
 Route::get('/check-email', function () {
     return new ConfirmYourEmail();
 });
+
+Route::get("/register/confirm", 'ConfirmUserTokenController@index');
