@@ -12,6 +12,13 @@
 */
 
 Route::get('/', function () {
-dd(App\User::all());
     return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/logout', function (){
+   auth()->logout();
 });
