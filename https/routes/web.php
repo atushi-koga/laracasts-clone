@@ -11,6 +11,8 @@
 |
 */
 
+use App\Mail\ConfirmYourEMail;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -19,6 +21,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/logout', function (){
-   auth()->logout();
+Route::get('/logout', function () {
+    auth()->logout();
+});
+
+Route::get('/check-email', function () {
+    return new ConfirmYourEmail();
 });

@@ -29,9 +29,6 @@
 
     <form class="form-type-material" action="/register" method="post">
         {{ csrf_field() }}
-        @if($errors)
-            @php var_dump($errors); @endphp
-        @endif
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Full Name" name="name">
         </div>
