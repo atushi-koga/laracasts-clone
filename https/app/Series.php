@@ -8,17 +8,22 @@ class Series extends Model
 {
     protected $guarded = ['id'];
 
+    protected $with = ['lessons'];
+
     /**
-     * Route model bindingのキーを変更する場合はgetRouteKeyNameをオーバーライド。
-     * デフォルトはprimary keyであるid。
+     * Route model bindingのキーをidからslugに変更
      *
      * Get the route key for the model.
      *
      * @return string
      */
-//    public function getRouteKeyName()
-//    {
-//        return $this->getKeyName();
-//    }
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
+    public function lessons()
+    {
+        return $this->hasMany(Lesson::class);
+    }
 }
