@@ -30,6 +30,7 @@ class SeriesController extends Controller
 
     /**
      * @param CreateSeriesRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(CreateSeriesRequest $request)
     {
