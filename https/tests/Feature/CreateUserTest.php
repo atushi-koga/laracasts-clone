@@ -72,14 +72,23 @@ class CreateUserTest extends TestCase
 
     public function testConfirmUserToken()
     {
-        $this->withoutExceptionHandling();
-
         $user = factory(User::class)->create();
 
         $this->get("/register/confirm?token={$user->confirm_token}")
-            ->assertRedirect('/');
+            ->assertRedirect('/')
+            ->assertSessionHas('success', 'Your email has been confirmed.');
 
         $this->assertTrue($user->fresh()->isConfirmed());
+    }
+
+    public function testCanNotConfirmWrongUserToken()
+    {
+        $user = factory(User::class)->create();
+
+        $this->get("/register/confirm?token=wrongToken")
+            ->assertRedirect('/')
+            ->assertSessionHas('error', 'Confirmation token not registered');
+
     }
 
 }

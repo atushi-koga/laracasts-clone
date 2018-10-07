@@ -13,9 +13,11 @@ class ConfirmUserTokenController extends Controller
         if($user){
             $user->confirm();
 
-            return redirect('/');
+            session()->flash('success', 'Your email has been confirmed.');
+        }else{
+            session()->flash('error', 'Confirmation token not registered');
         }
 
-        return abort(404);
+        return redirect('/');
     }
 }

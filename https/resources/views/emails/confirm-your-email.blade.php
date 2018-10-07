@@ -3,7 +3,7 @@
 
 We need you to confirm your email
 
-@component('mail::button', ['url' => "/register/confirm?token={$user->confirm_token}"])
+@component('mail::button', ['url' => route('confirm-email')."?token={$user->confirm_token}"])
 Confirm Email
 @endcomponent
 
