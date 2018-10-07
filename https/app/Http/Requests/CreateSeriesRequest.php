@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Series;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateSeriesRequest extends FormRequest
@@ -27,4 +28,27 @@ class CreateSeriesRequest extends FormRequest
             //
         ];
     }
+
+    public function uploadSeriesImage()
+    {
+        $uploadedImage = $this->image;
+        $this->filename = str_slug($this->title) . '.' . $uploadedImage->getClientOriginalExtension();
+
+        $uploadedImage->storePubliclyAs('series', $this->filename);
+
+        return $this;
+    }
+
+    public function storeSeries()
+    {
+        Series::create([
+
+            'title' => $this->title,
+            'slug' => str_slug($this->title),
+            'image_url' => 'series/' . $this->filename,
+            'description' => $this->description,
+
+        ]);
+    }
+
 }
