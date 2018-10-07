@@ -25,9 +25,9 @@ Route::get('/logout', function () {
     auth()->logout();
 });
 
-Route::get('/check-email', function () {
-    return new ConfirmYourEmail();
-});
-
 Route::get("/register/confirm", 'ConfirmUserTokenController@index')
     ->name('confirm-email');
+
+Route::prefix('admin')->group(function (){
+    Route::resource('series', 'SeriesController');
+});
