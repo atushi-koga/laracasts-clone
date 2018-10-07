@@ -20,7 +20,6 @@
 @section('content')
     <div class="section bg-grey">
         <div class="container">
-
             <div class="row gap-y">
                 <div class="col-12">
 
