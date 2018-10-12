@@ -17,7 +17,7 @@
 
 <script>
     export default {
-        props: ['default_lessons'],
+        props: ['default_lessons', 'series_id'],
         components: {
             "create-lesson": require('./children/CreateLesson.vue')
         },
@@ -33,7 +33,7 @@
         },
         methods: {
             createNewLesson(){
-                this.$emit('create-new-lesson')
+                this.$emit('create-new-lesson', this.series_id)
             }
         }
     }

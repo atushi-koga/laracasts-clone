@@ -30,4 +30,5 @@ Route::get("/register/confirm", 'ConfirmUserTokenController@index')
 
 Route::middleware('admin')->prefix('admin')->group(function (){
     Route::resource('series', 'SeriesController');
+    Route::resource('{series_by_id}/lessons', 'LessonController');
 });

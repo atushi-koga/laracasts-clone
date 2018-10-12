@@ -9,18 +9,18 @@
 	          </button>
 	        </div>
 	        <div class="modal-body">
-		         <div class="form-group">
-	              <input type="text" class="form-control" placeholder="Lesson title">
+               <div class="form-group">
+		            <input type="text" class="form-control" placeholder="Lesson title" v-model="title">
+                </div>
+	            <div class="form-group">
+	              <input type="text" class="form-control" placeholder="Vimeo video id" v-model="video_id">
 	            </div>
 	            <div class="form-group">
-	              <input type="text" class="form-control" placeholder="Vimeo video id">
-	            </div>
-	            <div class="form-group">
-	              <input type="number" class="form-control" placeholder="Episode number">
+	              <input type="number" class="form-control" placeholder="Episode number" v-model="episode_number">
 	            </div>
 
 	            <div class="form-group">
-	            	<textarea cols="30" rows="10" class="form-control"></textarea>
+	            	<textarea cols="30" rows="10" class="form-control" v-model="description"></textarea>
 	            </div>
                 <div class="form-group">
 	            	<input type="checkbox">Premium:
@@ -29,7 +29,7 @@
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	          <button type="button" class="btn btn-primary">Save lesson</button>
-	          <button type="button" class="btn btn-primary">Create lesson</button>
+	          <button type="button" class="btn btn-primary" @click="createLesson()">Create lesson</button>
 	        </div>
 	      </div>
 	    </div>
@@ -37,12 +37,36 @@
 </template>
 
 <script>
+    import Axios from 'axios'
     export default {
         mounted(){
-            this.$parent.$on('create-new-lesson', () => {
-                console.log('hello parents')
+            this.$parent.$on('create-new-lesson', (seriesId) => {
+                this.seriesId = seriesId
                 $('#createLesson').modal()
             })
+        },
+        data() {
+            return {
+                title: '',
+                description: '',
+                episode_number: '',
+                video_id: '',
+                seriesId: ''
+            }
+        },
+        methods: {
+            createLesson(){
+                Axios.post(`/admin/${this.seriesId}/lessons`, {
+                     title: this.title,
+                     description: this.description,
+                     episode_number: this.episode_number,
+                     video_id: this.video_id
+                }).then(resp => {
+                    console.log(resp)
+                }).catch(resp => {
+                    console.log(resp)
+                })
+            }
         }
     }
 </script>
