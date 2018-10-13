@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Http\Requests\CreateLessonRequest;
 use App\Series;
+use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +13,7 @@ class CreateLessonTest extends TestCase
 {
     use RefreshDatabase;
 
-    public  function testUserCanCreateLesson()
+    public function testUserCanCreateLesson()
     {
         $this->loginAdmin();
         $series = factory(Series::class)->create();
@@ -48,31 +50,34 @@ class CreateLessonTest extends TestCase
             ->assertSessionHasErrors('title');
     }
 
-    public function testDescriptionIsRequiredToCreateLesson()
+    /**
+     * @dataProvider CreateLessonProvider
+     */
+    public function testCreateLessonValidation($name, $value, $expectedResult, $expectedErrorMessage)
     {
-        $this->loginAdmin();
-        $series = factory(Series::class)->create();
-        $lesson = [
-            'title' => 'new lesson',
-            'episode_number' => 123,
-            'video_id' => '456',
-        ];
+        $request = new CreateLessonRequest();
+        $data = [$name => $value];
+        $rules = [$name => $request->rules()[$name]];
+        $validator = Validator::make($data, $rules);
 
-        $this->post("/admin/{$series->id}/lessons", $lesson)
-            ->assertSessionHasErrors('description');
+        $this->assertEquals($expectedResult, $validator->passes());
+
+        $errorMessage = $validator->errors()->get($name);
+        $errorMessage = array_shift($errorMessage);
+
+        $this->assertEquals($errorMessage, $expectedErrorMessage);
     }
 
-    public function testEpisodeNubmerIsRequiredToCreateLesson()
+    public function CreateLessonProvider()
     {
-        $this->loginAdmin();
-        $series = factory(Series::class)->create();
-        $lesson = [
-            'title' => 'new lesson',
-            'description' => 'this is new lesson',
-            'video_id' => '456',
+        return [
+            'title_required_false' => ['title', '', false, 'The title field is required.'],
+            'title_required_true' => ['title', 'new lesson', true, null],
+            'title_max_false' => ['title', '123456789012345678901', false, 'The title may not be greater than 20 characters.'],
+            'title_max_true' => ['title', '12345678901234567890', true, null],
+            'description_required_false' => ['description', '', false, 'The description field is required.'],
+            'description_required_true' => ['description', 'this is new lesson', true, null],
         ];
-
-        $this->post("/admin/{$series->id}/lessons", $lesson)
-            ->assertSessionHasErrors('episode_number');
     }
+
 }

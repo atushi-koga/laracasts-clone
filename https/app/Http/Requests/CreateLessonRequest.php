@@ -24,9 +24,10 @@ class CreateLessonRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required',
+            'title' => 'required|max:20',
             'description' => 'required',
-            'episode_number' => 'required'
+            'episode_number' => 'required',
+            'video_id' => 'required',
         ];
     }
 }
