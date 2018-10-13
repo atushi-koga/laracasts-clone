@@ -62,7 +62,8 @@
                      episode_number: this.episode_number,
                      video_id: this.video_id
                 }).then(resp => {
-                    console.log(resp)
+                    this.$parent.$emit('lesson_created', resp.data)
+                    $('#createLesson').modal('hide')
                 }).catch(resp => {
                     console.log(resp)
                 })

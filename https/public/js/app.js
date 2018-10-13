@@ -47720,20 +47720,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['default_lessons', 'series_id'],
+    mounted: function mounted() {
+        var _this = this;
+
+        this.$on('lesson_created', function (lesson) {
+            _this.lessons.push(lesson);
+        });
+    },
+
     components: {
         "create-lesson": __webpack_require__(45)
     },
     data: function data() {
         return {
-            lessons: this.default_lessons
+            lessons: JSON.parse(this.default_lessons)
         };
     },
 
-    computed: {
-        formattedLessons: function formattedLessons() {
-            return JSON.parse(this.lessons);
-        }
-    },
     methods: {
         createNewLesson: function createNewLesson() {
             this.$emit('create-new-lesson', this.series_id);
@@ -47857,13 +47860,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     methods: {
         createLesson: function createLesson() {
+            var _this2 = this;
+
             __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/' + this.seriesId + '/lessons', {
                 title: this.title,
                 description: this.description,
                 episode_number: this.episode_number,
                 video_id: this.video_id
             }).then(function (resp) {
-                console.log(resp);
+                _this2.$parent.$emit('lesson_created', resp.data);
+                $('#createLesson').modal('hide');
             }).catch(function (resp) {
                 console.log(resp);
             });
@@ -48109,7 +48115,7 @@ var render = function() {
       _c(
         "ul",
         { staticClass: "list-group" },
-        _vm._l(_vm.formattedLessons, function(lesson) {
+        _vm._l(_vm.lessons, function(lesson) {
           return _c("li", { staticClass: "list-group-item" }, [
             _vm._v("\n            " + _vm._s(lesson.title) + "\n        ")
           ])
