@@ -10,17 +10,17 @@
 	        </div>
 	        <div class="modal-body">
                <div class="form-group">
-		            <input type="text" class="form-control" placeholder="Lesson title" v-model="title">
+		            <input type="text" class="form-control" placeholder="Lesson title" v-model="lesson.title">
                 </div>
 	            <div class="form-group">
-	              <input type="text" class="form-control" placeholder="Vimeo video id" v-model="video_id">
+	              <input type="text" class="form-control" placeholder="Vimeo video id" v-model="lesson.video_id">
 	            </div>
 	            <div class="form-group">
-	              <input type="number" class="form-control" placeholder="Episode number" v-model="episode_number">
+	              <input type="number" class="form-control" placeholder="Episode number" v-model="lesson.episode_number">
 	            </div>
 
 	            <div class="form-group">
-	            	<textarea cols="30" rows="10" class="form-control" v-model="description"></textarea>
+	            	<textarea cols="30" rows="10" class="form-control" v-model="lesson.description"></textarea>
 	            </div>
                 <div class="form-group">
 	            	<input type="checkbox">Premium:
@@ -28,8 +28,8 @@
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	          <button type="button" class="btn btn-primary">Save lesson</button>
-	          <button type="button" class="btn btn-primary" @click="createLesson()">Create lesson</button>
+	          <button type="button" class="btn btn-primary" @click=updateLesson() v-if="editing">Save lesson</button>
+	          <button type="button" class="btn btn-primary" @click="createLesson()" v-else>Create lesson</button>
 	        </div>
 	      </div>
 	    </div>
@@ -38,32 +38,57 @@
 
 <script>
     import Axios from 'axios'
+
+    class Lesson {
+        constructor(lesson){
+            this.title = lesson.title || ''
+            this.description = lesson.description || ''
+            this.video_id = lesson.video_id || ''
+            this.episode_number = lesson.episode_number || ''
+        }
+    }
+
     export default {
         mounted(){
             this.$parent.$on('create-new-lesson', (seriesId) => {
                 this.seriesId = seriesId
+                this.editing = false
+                this.lesson = new Lesson({})
+
+                $('#createLesson').modal()
+            })
+
+            this.$parent.$on('edit-lesson', ({lesson, seriesId}) => {
+                this.editing = true
+                this.seriesId = seriesId
+                this.lessonId = lesson.id
+                this.lesson = new Lesson(lesson)
+
                 $('#createLesson').modal()
             })
         },
         data() {
             return {
-                title: '',
-                description: '',
-                episode_number: '',
-                video_id: '',
-                seriesId: ''
+                lesson : {},
+                seriesId: '',
+                editing: false,
+                lessonId: null
             }
         },
         methods: {
             createLesson(){
-                Axios.post(`/admin/${this.seriesId}/lessons`, {
-                     title: this.title,
-                     description: this.description,
-                     episode_number: this.episode_number,
-                     video_id: this.video_id
-                }).then(resp => {
+                Axios.post(`/admin/${this.seriesId}/lessons`, this.lesson).then(resp => {
                     this.$parent.$emit('lesson_created', resp.data)
                     $('#createLesson').modal('hide')
+                }).catch(resp => {
+                    console.log(resp)
+                })
+            },
+
+            updateLesson(){
+                Axios.put(`/admin/${this.seriesId}/lessons/${this.lessonId}`, this.lesson).then(resp => {
+                    $('#createLesson').modal('hide')
+                    this.$parent.$emit('lesson_updated', resp.data)
                 }).catch(resp => {
                     console.log(resp)
                 })

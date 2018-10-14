@@ -47738,6 +47738,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.$on('lesson_created', function (lesson) {
             _this.lessons.push(lesson);
         });
+
+        this.$on('lesson_updated', function (lesson) {
+            var lessonIndex = _this.lessons.findIndex(function (l) {
+                return lesson.id == l.id;
+            });
+
+            _this.lessons.splice(lessonIndex, 1, lesson);
+        });
     },
 
     components: {
@@ -47763,6 +47771,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     console.log(resp);
                 });
             }
+        },
+        editLesson: function editLesson(lesson) {
+            var seriesId = this.series_id;
+            this.$emit('edit-lesson', { lesson: lesson, seriesId: seriesId });
         }
     }
 });
@@ -47822,6 +47834,8 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_axios__);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 //
 //
 //
@@ -47861,6 +47875,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
+var Lesson = function Lesson(lesson) {
+    _classCallCheck(this, Lesson);
+
+    this.title = lesson.title || '';
+    this.description = lesson.description || '';
+    this.video_id = lesson.video_id || '';
+    this.episode_number = lesson.episode_number || '';
+};
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     mounted: function mounted() {
@@ -47868,16 +47892,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         this.$parent.$on('create-new-lesson', function (seriesId) {
             _this.seriesId = seriesId;
+            _this.editing = false;
+            _this.lesson = new Lesson({});
+
+            $('#createLesson').modal();
+        });
+
+        this.$parent.$on('edit-lesson', function (_ref) {
+            var lesson = _ref.lesson,
+                seriesId = _ref.seriesId;
+
+            _this.editing = true;
+            _this.seriesId = seriesId;
+            _this.lessonId = lesson.id;
+            _this.lesson = new Lesson(lesson);
+
             $('#createLesson').modal();
         });
     },
     data: function data() {
         return {
-            title: '',
-            description: '',
-            episode_number: '',
-            video_id: '',
-            seriesId: ''
+            lesson: {},
+            seriesId: '',
+            editing: false,
+            lessonId: null
         };
     },
 
@@ -47885,14 +47923,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         createLesson: function createLesson() {
             var _this2 = this;
 
-            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/' + this.seriesId + '/lessons', {
-                title: this.title,
-                description: this.description,
-                episode_number: this.episode_number,
-                video_id: this.video_id
-            }).then(function (resp) {
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/' + this.seriesId + '/lessons', this.lesson).then(function (resp) {
                 _this2.$parent.$emit('lesson_created', resp.data);
                 $('#createLesson').modal('hide');
+            }).catch(function (resp) {
+                console.log(resp);
+            });
+        },
+        updateLesson: function updateLesson() {
+            var _this3 = this;
+
+            __WEBPACK_IMPORTED_MODULE_0_axios___default.a.put('/admin/' + this.seriesId + '/lessons/' + this.lessonId, this.lesson).then(function (resp) {
+                $('#createLesson').modal('hide');
+                _this3.$parent.$emit('lesson_updated', resp.data);
             }).catch(function (resp) {
                 console.log(resp);
             });
@@ -47932,19 +47975,19 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.title,
-                    expression: "title"
+                    value: _vm.lesson.title,
+                    expression: "lesson.title"
                   }
                 ],
                 staticClass: "form-control",
                 attrs: { type: "text", placeholder: "Lesson title" },
-                domProps: { value: _vm.title },
+                domProps: { value: _vm.lesson.title },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.title = $event.target.value
+                    _vm.$set(_vm.lesson, "title", $event.target.value)
                   }
                 }
               })
@@ -47956,19 +47999,19 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.video_id,
-                    expression: "video_id"
+                    value: _vm.lesson.video_id,
+                    expression: "lesson.video_id"
                   }
                 ],
                 staticClass: "form-control",
                 attrs: { type: "text", placeholder: "Vimeo video id" },
-                domProps: { value: _vm.video_id },
+                domProps: { value: _vm.lesson.video_id },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.video_id = $event.target.value
+                    _vm.$set(_vm.lesson, "video_id", $event.target.value)
                   }
                 }
               })
@@ -47980,19 +48023,19 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.episode_number,
-                    expression: "episode_number"
+                    value: _vm.lesson.episode_number,
+                    expression: "lesson.episode_number"
                   }
                 ],
                 staticClass: "form-control",
                 attrs: { type: "number", placeholder: "Episode number" },
-                domProps: { value: _vm.episode_number },
+                domProps: { value: _vm.lesson.episode_number },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.episode_number = $event.target.value
+                    _vm.$set(_vm.lesson, "episode_number", $event.target.value)
                   }
                 }
               })
@@ -48004,19 +48047,19 @@ var render = function() {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.description,
-                    expression: "description"
+                    value: _vm.lesson.description,
+                    expression: "lesson.description"
                   }
                 ],
                 staticClass: "form-control",
                 attrs: { cols: "30", rows: "10" },
-                domProps: { value: _vm.description },
+                domProps: { value: _vm.lesson.description },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.description = $event.target.value
+                    _vm.$set(_vm.lesson, "description", $event.target.value)
                   }
                 }
               })
@@ -48035,25 +48078,33 @@ var render = function() {
               [_vm._v("Close")]
             ),
             _vm._v(" "),
-            _c(
-              "button",
-              { staticClass: "btn btn-primary", attrs: { type: "button" } },
-              [_vm._v("Save lesson")]
-            ),
-            _vm._v(" "),
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-primary",
-                attrs: { type: "button" },
-                on: {
-                  click: function($event) {
-                    _vm.createLesson()
-                  }
-                }
-              },
-              [_vm._v("Create lesson")]
-            )
+            _vm.editing
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.updateLesson()
+                      }
+                    }
+                  },
+                  [_vm._v("Save lesson")]
+                )
+              : _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: {
+                      click: function($event) {
+                        _vm.createLesson()
+                      }
+                    }
+                  },
+                  [_vm._v("Create lesson")]
+                )
           ])
         ])
       ])
@@ -48147,11 +48198,22 @@ var render = function() {
                 _c("p", [_vm._v(_vm._s(lesson.title))]),
                 _vm._v(" "),
                 _c("p", [
-                  _c("button", { staticClass: "btn btn-primary btn-xs" }, [
-                    _vm._v(
-                      "\n                            Edit\n                        "
-                    )
-                  ]),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary btn-xs",
+                      on: {
+                        click: function($event) {
+                          _vm.editLesson(lesson)
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                            Edit\n                        "
+                      )
+                    ]
+                  ),
                   _vm._v(" "),
                   _c(
                     "button",

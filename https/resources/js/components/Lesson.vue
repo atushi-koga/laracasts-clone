@@ -10,7 +10,7 @@
                 <li class="list-group-item d-flex justify-content-between" v-for="lesson, key in lessons">
                     <p>{{ lesson.title }}</p>
                     <p>
-                        <button class="btn btn-primary btn-xs"">
+                        <button class="btn btn-primary btn-xs" @click="editLesson(lesson)">
                             Edit
                         </button>
                         <button class="btn btn-danger btn-xs" @click="deleteLesson(lesson.id, key)">
@@ -31,6 +31,14 @@
         mounted() {
             this.$on('lesson_created', (lesson) => {
                 this.lessons.push(lesson)
+            })
+
+            this.$on('lesson_updated', (lesson) => {
+                let lessonIndex = this.lessons.findIndex(l => {
+                    return lesson.id == l.id
+                })
+
+                this.lessons.splice(lessonIndex, 1, lesson)
             })
         },
         components: {
@@ -54,6 +62,10 @@
                         console.log(resp)
                     })
                 }
+            },
+            editLesson(lesson){
+                let seriesId = this.series_id
+                this.$emit('edit-lesson', { lesson, seriesId })
             }
         }
     }
