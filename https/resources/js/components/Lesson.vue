@@ -30,6 +30,10 @@
         props: ['default_lessons', 'series_id'],
         mounted() {
             this.$on('lesson_created', (lesson) => {
+                window.noty({
+                    message: 'lesson created successfully!',
+                    type: 'success'
+                })
                 this.lessons.push(lesson)
             })
 
@@ -38,6 +42,10 @@
                     return lesson.id == l.id
                 })
 
+                window.noty({
+                    message: 'lesson edited successfully!',
+                    type: 'success'
+                })
                 this.lessons.splice(lessonIndex, 1, lesson)
             })
         },
@@ -58,6 +66,10 @@
                     axios.delete(`/admin/${this.series_id}/lessons/${id}`)
                     .then(resp => {
                         this.lessons.splice(key, 1)
+                        window.noty({
+                            message: 'lesson deleted successfully!',
+                            type: 'danger'
+                        })
                     }).catch(resp => {
                         console.log(resp)
                     })
