@@ -73,7 +73,7 @@ class CreateLessonTest extends TestCase
         return [
             'title_required_false' => ['title', '', false, 'The title field is required.'],
             'title_required_true' => ['title', 'new lesson', true, null],
-            'title_max_false' => ['title', '123456789012345678901', false, 'The title may not be greater than 20 characters.'],
+            'title_max_false' => ['title', '12345678901234567890123456789012345678901', false, 'The title may not be greater than 40 characters.'],
             'title_max_true' => ['title', '12345678901234567890', true, null],
             'description_required_false' => ['description', '', false, 'The description field is required.'],
             'description_required_true' => ['description', 'this is new lesson', true, null],
