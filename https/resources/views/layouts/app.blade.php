@@ -36,15 +36,15 @@
             <div class="topbar-right">
                 <ul class="topbar-nav nav">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a href="" class="nav-link">All series</a></li>
-                    <li class="nav-item"><a href="" class="nav-link">Create series</a></li>
-                    <li class="nav-item"><a href="" class="nav-link">All series</a></li>
-                    <li class="nav-item"><a href="" class="nav-link">All series</a></li>
-                    @if(auth()->check())
+                    @auth
+                        <li class="nav-item"><a href="{{ route('series.index') }}" class="nav-link">All series</a></li>
+                        <li class="nav-item"><a href="{{ route('series.create') }}" class="nav-link">Create series</a></li>
                         Hey {{ auth()->user()->name }}
-                    @else
+                    @endauth
+
+                    @guest
                         <li class="nav-item"><a class="nav-link" href="javascript:;" data-toggle="modal" data-target="#loginModal">Login</a></li>
-                    @endif
+                    @endguest
                 </ul>
             </div>
 
