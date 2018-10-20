@@ -41,7 +41,7 @@ class CreateSeriesTest extends TestCase
             'image' => UploadedFile::fake()->image($imageName),
             'description' => $description,
 
-        ])->assertRedirect()
+        ])->assertRedirect(route('series.show', str_slug($title)))
             ->assertSessionHas('success', 'Series created successfully');
 
         Storage::assertExists('series/' . $imageName);
