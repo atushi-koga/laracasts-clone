@@ -39,10 +39,8 @@ class SeriesController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param Series $series
+     * @return mixed
      */
     public function show(Series $series)
     {
