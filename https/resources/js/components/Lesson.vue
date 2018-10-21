@@ -68,10 +68,10 @@
                         this.lessons.splice(key, 1)
                         window.noty({
                             message: 'lesson deleted successfully!',
-                            type: 'danger'
+                            type: 'success'
                         })
-                    }).catch(resp => {
-                        console.log(resp)
+                    }).catch(error => {
+                        window.handleError(error)
                     })
                 }
             },

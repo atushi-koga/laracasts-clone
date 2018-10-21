@@ -14017,7 +14017,21 @@ window.Vue = __webpack_require__(37);
  */
 window.events = new Vue();
 window.noty = function (notification) {
-  window.events.$emit('notification', notification);
+    window.events.$emit('notification', notification);
+};
+
+window.handleError = function (error) {
+    if (error.response.status == 422) {
+        window.notry({
+            message: 'You had validation errors. Please try again.',
+            type: 'danger'
+        });
+    }
+
+    window.noty({
+        message: 'Something went wrong. Please refresh the page',
+        type: 'danger'
+    });
 };
 
 /**
@@ -14031,7 +14045,7 @@ Vue.component('vue-lessons', __webpack_require__(43));
 Vue.component('vue-noty', __webpack_require__(49));
 
 var app = new Vue({
-  el: '#app'
+    el: '#app'
 });
 
 /***/ }),
@@ -47786,10 +47800,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     _this2.lessons.splice(key, 1);
                     window.noty({
                         message: 'lesson deleted successfully!',
-                        type: 'danger'
+                        type: 'success'
                     });
-                }).catch(function (resp) {
-                    console.log(resp);
+                }).catch(function (error) {
+                    window.handleError(error);
                 });
             }
         },
@@ -47947,8 +47961,8 @@ var Lesson = function Lesson(lesson) {
             __WEBPACK_IMPORTED_MODULE_0_axios___default.a.post('/admin/' + this.seriesId + '/lessons', this.lesson).then(function (resp) {
                 _this2.$parent.$emit('lesson_created', resp.data);
                 $('#createLesson').modal('hide');
-            }).catch(function (resp) {
-                console.log(resp);
+            }).catch(function (error) {
+                window.handleError(error);
             });
         },
         updateLesson: function updateLesson() {
@@ -47957,8 +47971,8 @@ var Lesson = function Lesson(lesson) {
             __WEBPACK_IMPORTED_MODULE_0_axios___default.a.put('/admin/' + this.seriesId + '/lessons/' + this.lessonId, this.lesson).then(function (resp) {
                 $('#createLesson').modal('hide');
                 _this3.$parent.$emit('lesson_updated', resp.data);
-            }).catch(function (resp) {
-                console.log(resp);
+            }).catch(function (error) {
+                window.handleError(error);
             });
         }
     }
