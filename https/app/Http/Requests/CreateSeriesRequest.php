@@ -5,17 +5,8 @@ namespace App\Http\Requests;
 use App\Series;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateSeriesRequest extends FormRequest
+class CreateSeriesRequest extends SeriesRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -24,22 +15,12 @@ class CreateSeriesRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'title' => 'required',
-            'description' => 'required',
-            'image' => 'required|image',
-        ];
+        $rules = parent::rules();
+        $rules['image'] = 'required|image';
+
+        return $rules;
     }
 
-    public function uploadSeriesImage()
-    {
-        $uploadedImage = $this->image;
-        $this->filename = str_slug($this->title) . '.' . $uploadedImage->getClientOriginalExtension();
-
-        $uploadedImage->storePubliclyAs('series', $this->filename);
-
-        return $this;
-    }
 
     public function storeSeries()
     {
@@ -55,6 +36,16 @@ class CreateSeriesRequest extends FormRequest
         session()->flash('success', 'Series created successfully');
 
         return redirect()->route('series.show', $series->slug);
+    }
+
+    /**
+     * Get the URL to redirect to on a validation error.
+     *
+     * @return string
+     */
+    protected function getRedirectUrl()
+    {
+        return route('series.create');
     }
 
 }
