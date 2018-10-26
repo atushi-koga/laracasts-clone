@@ -1,5 +1,10 @@
 <?php
 
+Route::get('redis', function(){
+    Redis::set('friend', 'momo');
+    dd(Redis::get('friend'));
+});
+
 Route::get('/', 'FrontendController@welcome');
 
 Auth::routes();

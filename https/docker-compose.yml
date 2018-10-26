@@ -7,6 +7,7 @@ services:
     privileged: true
     links:
       - db
+      - redis
     volumes:
       - "./:/var/www/html"
     container_name: "apache-php"
@@ -20,3 +21,7 @@ services:
     container_name: "psql"
   selenium:
     image: selenium/standalone-chrome:latest
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
