@@ -20,6 +20,7 @@
         "vue": "^2.5.7"
     },
     "dependencies": {
-        "@vimeo/player": "^2.6.4"
+        "@vimeo/player": "^2.6.4",
+        "sweetalert": "^2.1.0"
     }
 }
