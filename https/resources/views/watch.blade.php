@@ -8,7 +8,7 @@
       <div class="col-12 col-lg-8 offset-lg-2">
 
         <h1>{{ $lesson->title }}</h1>
-        <p class="fs-20 opacity-70">{{  $series->title }}</p>
+        <p class="fs-20 opacity-70">{{ $series->title }}</p>
 
       </div>
     </div>
@@ -23,12 +23,26 @@
       <div class="row gap-y text-center">
         <div class="col-12">
           <vue-player default_lesson="{{ $lesson }}"></vue-player>
+          @if($lesson->getPrevLesson())
+            <a class="btn btn-info btn-lg pull-left" href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $lesson->getPrevLesson()->id]) }}">Prev Lesson</a>
+          @endif
+          @if($lesson->getNextLesson())
+            <a class="btn btn-info btn-lg pull-right" href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $lesson->getNextLesson()->id]) }}">Next Lesson</a>
+          @endif
         </div>
         <div class="col-12">
           <ul class="list-group">
           </ul>
         </div>
       </div>
+    </div>
+
+    <div class="col-12">
+      <ul class="list-group">
+        @foreach($series->getOrderedLessons() as $l)
+          <li class="list-group-item"><a href="{{ route('series.watch', ['series' => $series->slug, 'lesson' => $l->id]) }}">{{ $l->title }}</a></li>
+        @endforeach
+      </ul>
     </div>
   </div>
 @stop
