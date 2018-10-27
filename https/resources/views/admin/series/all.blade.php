@@ -29,7 +29,7 @@
                             <th>Delete</th>
                             @forelse($series as $s)
                                 <tr>
-                                    <td>{{ $s->title }}</td>
+                                    <td><a href="{{ route('series.show', $s->slug) }}">{{ $s->title }}</a></td>
                                     <td><a href="{{ route('series.edit', $s->slug) }}" class="btn btn-info">Edit</a></td>
                                     <td><a class="btn btn-danger">Delete</a></td>
                                 </tr>
