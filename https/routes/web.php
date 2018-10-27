@@ -22,6 +22,7 @@ Route::get('watch-series/{series}', 'WatchSeriesController@index')
 Route::get('series/{series}/lesson/{lesson}', 'WatchSeriesController@showLesson')
     ->name('series.watch');
 
+Route::post('/series/complete-lesson/{lesson}', 'WatchSeriesController@completeLesson');
 
 Auth::routes();
 
