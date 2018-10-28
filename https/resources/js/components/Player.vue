@@ -5,6 +5,7 @@
 </template>
 
 <script>
+    import Axios from 'axios'
     import Swal from 'sweetalert'
     import Player from '@vimeo/player'
     export default {
@@ -24,6 +25,12 @@
                 }else{
                     Swal('Yaaa! You completed series !!!')
                 }
+            },
+            completeLesson(){
+                Axios.post(`/series/complete-lesson/${this.lesson.id}`, {})
+                .then(resp => {
+                    this.displayVideoEndedAlert()
+                })
             }
         },
 
@@ -35,7 +42,7 @@
             })
 
             player.on('ended', () => {
-                this.displayVideoEndedAlert()
+                this.completeLesson()
             })
         }
     }
