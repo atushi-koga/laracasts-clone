@@ -26,7 +26,7 @@ class CreateUserTest extends TestCase
             'password' => $userPassword,
 
         ])
-            ->assertRedirect('/home');
+            ->assertRedirect('/');
 
         $this->assertDatabaseHas('users', [
 
@@ -46,7 +46,7 @@ class CreateUserTest extends TestCase
             'password' => 'secret',
 
         ])
-            ->assertRedirect('/home');
+            ->assertRedirect('/');
 
         Mail::assertSent(ConfirmYourEmail::class);
     }

@@ -150,6 +150,25 @@ class UserTest extends TestCase
         $this->assertTrue(in_array($lesson->series->id, $idsOfSeriesBeingWatched));
         $this->assertTrue(in_array($lesson3->series->id, $idsOfSeriesBeingWatched));
         $this->assertFalse(in_array($lesson5->series->id, $idsOfSeriesBeingWatched));
+    }
 
+    public function testCanGetTotalNumberOfCompletedLessonsForUser()
+    {
+        $user = factory(User::class)->create();
+        $lesson1 = factory(Lesson::class)->create();
+        $lesson1_2 = factory(Lesson::class)->create([
+            'series_id' => 1,
+        ]);
+        $lesson2 = factory(Lesson::class)->create();
+        $lesson3_1 = factory(Lesson::class)->create();
+        $lesson3_2 = factory(Lesson::class)->create([
+            'series_id' => 3,
+        ]);
+
+        $user->completeLesson($lesson1);
+        $user->completeLesson($lesson1_2);
+        $user->completeLesson($lesson3_1);
+
+        $this->assertEquals(3, $user->getTotalNumberOfCompletedLessons());
     }
 }

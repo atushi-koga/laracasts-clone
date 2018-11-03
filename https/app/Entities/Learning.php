@@ -66,18 +66,30 @@ trait Learning
         return in_array($lesson->id, $this->getCompletedLessonsIds($lesson->series));
     }
 
-    public function getSeriesBeingWatched()
+    public function getSeriesBeingWatchedId()
     {
         $keys = Redis::keys("user:{$this->id}:series:*");
         $ids = [];
         foreach($keys as $key){
-//            if(preg_match('/series:(.)/', $key, $matches)){
-//                $ids[] = $matches[1];
-//            }
             $ids[] = explode(':', $key)[3];
         }
 
-        return Series::whereIn('id', $ids)->get();
+        return $ids;
     }
 
+    public function getSeriesBeingWatched()
+    {
+        return Series::whereIn('id', $this->getSeriesBeingWatchedId())->get();
+    }
+
+    public function getTotalNumberOfCompletedLessons()
+    {
+        $count = 0;
+        $seriesBeingWatched = $this->getSeriesBeingWatched();
+        foreach($seriesBeingWatched as $series){
+            $count += $this->getNumberOfCompletedLessons($series);
+        }
+
+        return $count;
+    }
 }
