@@ -26,6 +26,7 @@ class SeriesController extends Controller
      */
     public function create()
     {
+        abort(500);
         return view('admin.series.create');
     }
 
