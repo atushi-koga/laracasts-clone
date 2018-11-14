@@ -44,6 +44,19 @@ return [
             'database' => database_path('testing.sqlite'),
             'prefix' => '',
         ],
+        'pgsql_testing' => [
+            'driver' => 'pgsql',
+            'host' => 'psql',
+            'port' => '5432',
+            'database' => 'pgsql_test',
+            'username' => 'pgsql_local',
+            'password' => 'ewpAWB#P3w',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
 
         'mysql' => [
             'driver' => 'mysql',
