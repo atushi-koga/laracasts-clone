@@ -18,6 +18,8 @@ services:
       POSTGRES_PASSWORD: ewpAWB#P3w
     ports:
       - "5432:5432"
+    volumes:
+      - "./initdb/:/docker-entrypoint-initdb.d"
     container_name: "psql"
   selenium:
     image: selenium/standalone-chrome:latest

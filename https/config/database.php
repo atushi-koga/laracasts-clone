@@ -40,17 +40,18 @@ return [
         ],
 
         'testing' => [
-            'driver' => 'sqlite',
+            'driver'   => 'sqlite',
             'database' => database_path('testing.sqlite'),
-            'prefix' => '',
+            'prefix'   => '',
         ],
+
         'pgsql_testing' => [
             'driver' => 'pgsql',
-            'host' => 'psql',
-            'port' => '5432',
-            'database' => 'pgsql_test',
-            'username' => 'pgsql_local',
-            'password' => 'ewpAWB#P3w',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('TEST_DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
