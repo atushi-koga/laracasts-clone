@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Mail\ConfirmYourEmail;
 use App\User;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -15,6 +16,7 @@ class CreateUserTest extends TestCase
 
     public function test_can_create_user()
     {
+
         $userName = 'test user';
         $userEmail = 'test@gmail.com';
         $userPassword = 'secret';
@@ -26,7 +28,7 @@ class CreateUserTest extends TestCase
             'password' => $userPassword,
 
         ])
-            ->assertRedirect('/home');
+            ->assertRedirect('/');
 
         $this->assertDatabaseHas('users', [
 
@@ -46,7 +48,7 @@ class CreateUserTest extends TestCase
             'password' => 'secret',
 
         ])
-            ->assertRedirect('/home');
+            ->assertRedirect('/');
 
         Mail::assertSent(ConfirmYourEmail::class);
     }
@@ -56,18 +58,21 @@ class CreateUserTest extends TestCase
         Mail::fake();
 
         $this->post('/register', [
-
             'name' => 'new user',
             'email' => 'new_user@gmail.com',
             'password' => 'secret',
 
         ]);
 
+        $this->assertDatabaseHas('users', [
+            'name' => 'new user',
+            'email' => 'new_user@gmail.com',
+        ]);
+
         $user = User::find(1);
 
         $this->assertNotNull($user->confirm_token);
         $this->assertFalse($user->isConfirmed());
-
     }
 
     public function testConfirmUserToken()

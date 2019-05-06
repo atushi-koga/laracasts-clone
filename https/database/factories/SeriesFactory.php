@@ -9,6 +9,6 @@ $factory->define(Series::class, function (Faker $faker) {
         'title' => $title,
         'slug' => str_slug($title),
         'image_url' => $faker->imageUrl(),
-        'description' => $faker->paragraph()
+        'description' => $faker->paragraph(1),
     ];
 });

@@ -14,15 +14,10 @@
 //    dd(Redis::smembers('frontend'));
 //});
 
-Route::get('/', 'FrontendController@welcome');
+Route::get('/', 'FrontendController@welcome')
+    ->name('top');
 Route::get('series/{series}', 'FrontendController@series')
     ->name('series');
-Route::get('watch-series/{series}', 'WatchSeriesController@index')
-    ->name('series.learning');
-Route::get('series/{series}/lesson/{lesson}', 'WatchSeriesController@showLesson')
-    ->name('series.watch');
-
-Route::post('/series/complete-lesson/{lesson}', 'WatchSeriesController@completeLesson');
 
 Auth::routes();
 
@@ -30,6 +25,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/logout', function () {
     auth()->logout();
+    return redirect(route('top'));
 });
 
 Route::get("/register/confirm", 'ConfirmUserTokenController@index')
@@ -38,4 +34,15 @@ Route::get("/register/confirm", 'ConfirmUserTokenController@index')
 Route::middleware('admin')->prefix('admin')->group(function () {
     Route::resource('series', 'SeriesController');
     Route::resource('{series_by_id}/lessons', 'LessonController');
+});
+
+Route::get('profile/{user}', 'ProfilesController@index')
+    ->name('profile');
+
+Route::middleware('auth')->group(function () {
+    Route::get('watch-series/{series}', 'WatchSeriesController@index')
+        ->name('series.learning');
+    Route::get('series/{series}/lesson/{lesson}', 'WatchSeriesController@showLesson')
+        ->name('series.watch');
+    Route::post('/series/complete-lesson/{lesson}', 'WatchSeriesController@completeLesson');
 });

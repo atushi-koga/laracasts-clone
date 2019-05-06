@@ -37,9 +37,13 @@
                 <ul class="topbar-nav nav">
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
                     @auth
-                        <li class="nav-item"><a href="{{ route('series.index') }}" class="nav-link">All series</a></li>
-                        <li class="nav-item"><a href="{{ route('series.create') }}" class="nav-link">Create series</a></li>
-                        Hey {{ auth()->user()->name }}
+                        @admin
+                            <li class="nav-item"><a href="{{ route('series.index') }}" class="nav-link">All series</a></li>
+                            <li class="nav-item"><a href="{{ route('series.create') }}" class="nav-link">Create series</a></li>
+                        @endadmin
+                        <li class="nav-item"><a href="{{ route('profile', ['user' => auth()->user()->username]) }}" class="nav-link">Profile</a></li>
+                        <li class="nav-item"><a href="{{ route('logout') }}" class="nav-link">Logout</a></li>
+                        <li class="nav-item">Hey {{ auth()->user()->name }}</li>
                     @endauth
 
                     @guest
